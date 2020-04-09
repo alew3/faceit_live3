@@ -14,18 +14,27 @@ import pyfakewebcam
 import pyautogui
 import os
 import glob
+from argparse import Namespace
+import argparse
 warnings.filterwarnings("ignore")
 
 ############## setup ####
 stream = True
 media_path = './media/'
 model_path = 'model/'
-webcam_id = 2
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--webcam_id', type = int, default = 2)
+parser.add_argument('--stream_id', type = int, default = 1)
+args = parser.parse_args()
+
+
+webcam_id = args.webcam_id
 webcam_height = 480
 webcam_width = 640
 screen_width, screen_height = pyautogui.size()
 
-stream_id = 1
+stream_id = args.stream_id
 first_order_path = 'first-order-model/'
 sys.path.insert(0,first_order_path)
 reset = True

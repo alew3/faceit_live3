@@ -26,8 +26,6 @@ $ sudo modprobe v4l2loopback exclusive_caps=1 card_label="faceit_live" video_nr=
 $ v4l2-ctl -d /dev/video1 -c timeout=1000
 ```
 
-# v4l2loopback-ctl set-timeout-image caio.png /dev/video1
-
 
 Change the video_nr above in case you already have a webcam running on /dev/video1
 
@@ -100,13 +98,18 @@ Put in the `./media/` directory the images in jpg/png you want to play with.
 $ python faceit_live.py
 ```
 
-## Parameters
+## Shortcuts
     --webcam # the videoid of the Webcam e.g. 0 if /dev/video0 (default is 0)
     --image # the face to use for transformations, put the files inside media (by default it loads the first image in the folder)
     --streamto # the /dev/video number to stream to (default is 1)
 
 ## Example
 ```
-$ python faceit_live.py --webcam 0 --stream 1 --image oliver.jpg
+$ python faceit_live.py --webcam_id 0 --stream_id 1
 ```
 
+## Shortcuts when running
+```
+N - cycle next image in media folder
+C - recenter webcam
+```
