@@ -82,7 +82,7 @@ $ pip install -r requirements.txt
 
 ```
 
-## Download 'vox-adv-cpk.pth.tar' to /models folder
+## Download 'vox-adv-cpk.pth.tar' to /model folder
 
 You can find it at: [google-drive](https://drive.google.com/open?id=1PyQJmkdCsAkOYwUyaj_l-l0as-iLDgeH) or [yandex-disk](https://yadi.sk/d/lEw8uRm140L_eQ).
 
