@@ -1,0 +1,3 @@
+[submodule "first-order-model"]
+	path = first-order-model
+	url = https://github.com/AliaksandrSiarohin/first-order-model

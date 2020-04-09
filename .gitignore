@@ -6,6 +6,10 @@ __pycache__/
 # C extensions
 *.so
 
+#Pytorch Models / Config
+models/*.tar
+models/*.yaml
+
 # Distribution / packaging
 .Python
 build/
@@ -127,3 +131,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+model/vox-adv-cpk.pth.tar
+media/rodrigo.jpg
+media/natorf.jpg
+media/dani.png
+media/caio2.png
+media/bruno.png
+media/ale.png
