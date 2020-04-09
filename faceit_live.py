@@ -16,6 +16,7 @@ import os
 import glob
 from argparse import Namespace
 import argparse
+import timeit
 warnings.filterwarnings("ignore")
 
 ############## setup ####

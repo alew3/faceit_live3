@@ -73,7 +73,7 @@ Don't forget to use the *--recurse-submodules* parameter to checkout all depende
 
     $ git clone --recurse-submodules https://github.com/alew3/faceit_live3.git /local_path/
 
-## Create an Anaconda environment and install requirments
+## Create an Anaconda environment and install requirements
 ```
 $ conda create -n faceit_live3 python=3.8
 $ source activate faceit_live3
@@ -98,10 +98,9 @@ Put in the `./media/` directory the images in jpg/png you want to play with.
 $ python faceit_live.py
 ```
 
-## Shortcuts
-    --webcam # the videoid of the Webcam e.g. 0 if /dev/video0 (default is 0)
-    --image # the face to use for transformations, put the files inside media (by default it loads the first image in the folder)
-    --streamto # the /dev/video number to stream to (default is 1)
+## Parameters
+    --webcam_id # the videoid of the Webcam e.g. 0 if /dev/video0 (default is 0)
+    --stream_id # the /dev/video number to stream to (default is 1)
 
 ## Example
 ```
