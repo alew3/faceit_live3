@@ -68,7 +68,7 @@ def main():
     # start streaming
     camera = pyfakewebcam.FakeWebcam(f'/dev/video{stream_id}', webcam_width, webcam_height)
     camera.print_capabilities()
-    print(f"Fake webcam created on /dev/video{stream}. Use Firefox and join a Google Meeting to test.")
+    print(f"Fake webcam created on /dev/video{stream_id}. Use Firefox and join a Google Meeting to test.")
 
     # capture webcam
     video_capture = cv2.VideoCapture(webcam_id)
@@ -98,8 +98,9 @@ def main():
     cv2.resizeWindow('Stream', webcam_width,webcam_width)
 
     
-    print("Press C to center Webcam, Press N for next image in media directory")
-
+    print("Press C to center Webcam, Press N for next image in media directory, R to alter between relative and absolute transformation")
+    x1,y1,x2,y2 = [0,0,0,0]
+    relative = True
     while True:
         ret, frame = video_capture.read()
         frame = cv2.resize(frame, (640, 480))
@@ -107,14 +108,19 @@ def main():
 
         if (previous is None or reset is True):
             x1,y1,x2,y2 = find_face_cut(net,frame)
-            previous = cut_face_window(x1,y1,x2,y2,source_image)
+            previous = cut_face_window(x1,y1,x2,y2,frame)
             reset = False
+            #cv2.imshow('Previous',previous)
 
-        deep_fake = process_image(previous,cut_face_window(x1,y1,x2,y2,frame),net, generator, kp_detector)
+
+        curr_face = cut_face_window(x1,y1,x2,y2,frame)
+        #cv2.imshow('Curr Face',curr_face)
+        #cv2.imshow('Source Image',source_image)
+        deep_fake = process_image(source_image,previous,curr_face,net, generator, kp_detector, relative)
         deep_fake = cv2.cvtColor(deep_fake, cv2.COLOR_RGB2BGR) 
 
         #cv2.imshow('Webcam', frame) - get face
-        cv2.imshow('Face', cut_face_window(x1,y1,x2,y2,frame))
+        cv2.imshow('Face', curr_face)
         cv2.imshow('DeepFake', deep_fake)
 
 
@@ -144,14 +150,20 @@ def main():
             # rotate images
             source_image = readnextimage()
             reset = True
+        elif k==ord('r'):
+            # rotate images
+            relative = not relative
 
     cv2.destroyAllWindows()
     exit()
 
 
 # transform face with first-order-model
-def process_image(base,current,net, generator,kp_detector):
-    predictions = make_animation(source_image, [base,current], generator, kp_detector, relative=False, adapt_movement_scale=False)
+def process_image(source_image,base,current,net, generator,kp_detector,relative):
+    predictions = make_animation(source_image, [base,current], generator, kp_detector, relative=relative, adapt_movement_scale=False)
+    
+    # predictions = [1]# predictions[..., ::-1]
+    # predictions = (np.clip(predictions, 0, 1) * 255).astype(np.uint8)
     return predictions[1]
 
 def load_face_model():
@@ -160,13 +172,13 @@ def load_face_model():
     net = cv2.dnn.readNetFromCaffe(configFile, modelFile)
     return net
 
-def cut_face_window(x1,y1,x2,y2,face):
+def cut_face_window(x1,y1,x2,y2,frame):
     cut_x1 = x1
     cut_y1 = y1
     cut_x2 = x2
     cut_y2 = y2
-    face = face[cut_y1:cut_y2,cut_x1:cut_x2]
-    face = resize(face, (256, 256))[..., :3]
+    frame = frame[cut_y1:cut_y2,cut_x1:cut_x2]
+    face = resize(frame, (256, 256))[..., :3]
     
     return face
 
@@ -215,8 +227,8 @@ def readnextimage(position=-1):
             pos=pos+1
         else:
             pos=0
-    source_image = imageio.imread(img_list[pos])
-    source_image = resize(source_image, (256, 256))[..., :3]
-    return source_image
+    img = imageio.imread(img_list[pos])
+    img = resize(img, (256, 256))[..., :3]
+    return img
 
 main()

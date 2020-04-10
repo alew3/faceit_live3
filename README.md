@@ -64,7 +64,7 @@ If you have more than one GPU, you might need to set some environment variables:
 $ export DISPLAY=:1
 
 # which CUDA DEVICE to use (run nvidia-smi to discover the ID)
-$ export CUDA_VISIBLE_DEVICES = 0
+$ export CUDA_VISIBLE_DEVICES=0
 
 ```
 
@@ -110,5 +110,9 @@ $ python faceit_live.py --webcam_id 0 --stream_id 1
 ## Shortcuts when running
 ```
 N - cycle next image in media folder
-C - recenter webcam
+C - recenter webcam and create a new base image for transformation
+R - option to alter between Relative and Absolute transformations
 ```
+
+# Tip
+For better results, look into the webcam when starting the program or when pressing C, as this will create a base image from your face that is used for the transformation. Move away and closer to the webcam to find the best distance for better results.
