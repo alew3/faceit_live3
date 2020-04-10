@@ -115,4 +115,4 @@ T - option to alter between 'Relative' and 'Absolute' transformations mode
 ```
 
 # Tip
-For better results, look into the webcam when starting the program or when pressing C, as this will create a base image from your face that is used for the transformation. Move away and closer to the webcam to find the best distance for better results.
+For better results, look into the webcam when starting the program or when pressing C, as this will create a base image from your face that is used for the transformation. Move away and closer to the webcam to find the ideal distance for better results.
