@@ -150,7 +150,7 @@ def main():
             # rotate images
             source_image = readnextimage()
             reset = True
-        elif k==ord('r'):
+        elif k==ord('t'):
             # rotate images
             relative = not relative
 
