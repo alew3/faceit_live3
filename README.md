@@ -38,10 +38,7 @@ Other versions might work, but I haven't tested them.
 
 # Install Anaconda Environment
 
-* [Anaconda Environment](https://www.anaconda.com/distribution/)
-
-
-# Setup Windows Version
+* Dowload and install [Anaconda](https://www.anaconda.com/distribution/)
 
 ## Create an Anaconda environment and install requirements
 ```
@@ -50,6 +47,9 @@ $ conda activate faceit_live3
 $ conda install pytorch=1.4 torchvision=0.5 cudatoolkit=10.1 -c pytorch
 $ pip install -r requirements.txt
 ```
+
+
+# Setup Windows Version
 
 ## Setup Virtual Camera for streaming
 
@@ -68,14 +68,6 @@ Open Firefox and joing Google Hangout to test it, don't forget to choose the OBS
 ![Select the OBSCAM](https://raw.githubusercontent.com/alew3/faceit_live3/master/docs/obscam.png)
 
 # Setup Linux Version
-
-## Create an Anaconda environment and install requirements
-```
-$ conda create -n "faceit_live3" python=3.8
-$ source activate faceit_live3
-$ conda install pytorch=1.4 torchvision=0.5 cudatoolkit=10.1 -c pytorch
-$ pip install -r requirements.txt
-```
 
 To use the fake webcam feature to enter conferences with our stream we need to insert the **v4l2loopback** kernel module in order to create */dev/video1*. Follow the install instructions at  (https://github.com/umlaeute/v4l2loopback), then let's setup our fake webcam:
 
@@ -126,6 +118,7 @@ Put in the `/media` directory the images in jpg/png you want to play with. Squar
 # Run the program 
 
 ```
+$ conda activate faceit_live3
 $ python faceit_live.py
 ```
 
@@ -137,7 +130,7 @@ $ python faceit_live.py
 
 ## Example
 ```
-$ python faceit_live.py --webcam_id 0 --stream_id 1
+$ python faceit_live.py --webcam_id 0 --stream_id 1 --gpu_id 0 --system linux
 ```
 
 ## Key Shortcuts when running
@@ -151,10 +144,16 @@ Q - to quit and close all Windows
 # Tip
 For better results, look into the webcam when starting the program or when pressing C, as this will create a base image from your face that is used for the transformation. Move away and closer to the webcam to find the ideal distance for better results.
 
-## Troubleshooting
+# Troubleshooting
 
 ### Slow
 If it is running slow, check that it is running on the GPU by looking at the TASK MANAGER under Windows and NVidia Control Panel for Linux.
+
+### Error
+If you get the error below under LINUX, it means you haven't started your v4l2loopback.
+```
+cv2.error: OpenCV(4.2.0) /io/opencv/modules/imgproc/src/resize.cpp:4045: error: (-215:Assertion failed) !ssize.empty() in function 'resize'
+```
 
 ### Multiple GPU
 

@@ -40,6 +40,7 @@ screen_width, screen_height = pyautogui.size()
 
 system = args.system
 if system=="linux":
+    print("Linux version, importing FakeWebCam")
     import pyfakewebcam
 
 
@@ -157,8 +158,8 @@ def main():
 
         # stream to fakewebcam
         if system=="linux":
+            #print("output to fakecam")
             camera.schedule_frame(stream_v)
-
 
         k = cv2.waitKey(1) 
         # Hit 'q' on the keyboard to quit!
