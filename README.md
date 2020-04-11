@@ -17,10 +17,7 @@ You will need the following to make it work:
     Linux host OS / Win 10
     NVidia fast GPU (GTX 1080, GTX 1080i, Titan, etc ...)
     Fast Desktop CPU (Quad Core or more)
-    
     Webcam
-    Anaconda Environment (https://www.anaconda.com/distribution/)
-
 
 # Clone this repository
 Don't forget to use the *--recurse-submodules* parameter to checkout all dependencies. In Windows you might need to install a  [Git Client](https://git-scm.com/download/win).
@@ -38,11 +35,10 @@ Install the latest Nvidia video driver then the Deep Learning infrastructure:
 * [cuDNN](https://developer.nvidia.com/cudnn) version for CUDA 10.1 - you will need to register to download it.
 
 Other versions might work, but I haven't tested them.
-   
 
-## Usage
+# Install Anaconda Environment
 
-Put in the `/media` directory the images in jpg/png you want to play with. Squared images that have just a face filling most of the space will work better.
+* [Anaconda Environment](https://www.anaconda.com/distribution/)
 
 
 # Setup Windows Version
@@ -123,6 +119,9 @@ $ v4l2-ctl --list-formats -d /dev/video1
 
 ```
 
+## Images
+
+Put in the `/media` directory the images in jpg/png you want to play with. Squared images that have just a face filling most of the space will work better.
 
 # Run the program 
 
@@ -156,7 +155,6 @@ For better results, look into the webcam when starting the program or when press
 
 ### Slow
 If it is running slow, check that it is running on the GPU by looking at the TASK MANAGER under Windows and NVidia Control Panel for Linux.
-
 
 ### Multiple GPU
 
