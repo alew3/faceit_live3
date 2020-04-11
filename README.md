@@ -61,7 +61,7 @@ After you install Virtual CAM.
 - Add a Filter to the Window Capture by right clicking and selecting Filters, then "+" and choose Virtual CAM
 - Start the Virtual CAM from the Tools Menu
 
-[![Select the OBSCAM](https://raw.githubusercontent.com/alew3/faceit_live3/master/docsobs.png)]
+[![Select the OBSCAM](https://raw.githubusercontent.com/alew3/faceit_live3/master/docs/obs.png)]
 
 Open Firefox and joing Google Hangout to test it, don't forget to choose the OBS CAM from the camera options under settings.
 
