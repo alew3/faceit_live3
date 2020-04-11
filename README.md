@@ -45,7 +45,7 @@ Other versions might work, but I haven't tested them.
 
 ## Create an Anaconda environment and install requirements
 ```
-$ conda create -n faceit_live3 python=3.8
+$ conda create -n "faceit_live3" python=3.8
 $ conda activate faceit_live3
 $ conda install pytorch=1.4 torchvision=0.5 cudatoolkit=10.1 -c pytorch
 $ pip install -r requirements.txt
@@ -71,7 +71,7 @@ Open Firefox and joing Google Hangout to test it, don't forget to choose the OBS
 
 ## Create an Anaconda environment and install requirements
 ```
-$ conda create -n faceit_live3 python=3.8
+$ conda create -n "faceit_live3" python=3.8
 $ source activate faceit_live3
 $ conda install pytorch=1.4 torchvision=0.5 cudatoolkit=10.1 -c pytorch
 $ pip install -r requirements.txt
