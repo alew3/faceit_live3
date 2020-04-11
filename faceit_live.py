@@ -10,13 +10,13 @@ import PIL.Image as Image
 import PIL.ImageFilter
 import io
 from io import BytesIO
-import pyfakewebcam
 import pyautogui
 import os
 import glob
 from argparse import Namespace
 import argparse
 import timeit
+import torch
 warnings.filterwarnings("ignore")
 
 ############## setup ####
@@ -25,15 +25,23 @@ media_path = './media/'
 model_path = 'model/'
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--webcam_id', type = int, default = 2)
+parser.add_argument('--webcam_id', type = int, default = 0)
 parser.add_argument('--stream_id', type = int, default = 1)
+parser.add_argument('--gpu_id', type = int, default = 0)
+parser.add_argument('--system', type = str, default = "win")
+
 args = parser.parse_args()
-
-
 webcam_id = args.webcam_id
+gpu_id = args.gpu_id
+
 webcam_height = 480
 webcam_width = 640
 screen_width, screen_height = pyautogui.size()
+
+system = args.system
+if system=="linux":
+    import pyfakewebcam
+
 
 stream_id = args.stream_id
 first_order_path = 'first-order-model/'
@@ -47,13 +55,25 @@ from demo import load_checkpoints, make_animation, tqdm
 # prevent tqdm from outputting to console
 demo.tqdm = lambda *i, **kwargs: i[0]
 
+print("CUDA is available: ",torch.cuda.is_available())
+if (torch.cuda.is_available()):
+    torch.cuda.device("cuda:" + str(gpu_id))
+    print("Device Name:",torch.cuda.get_device_name(gpu_id))
+    print("Device Count:",torch.cuda.device_count())
+    print("CUDA: ",torch.version.cuda)
+    print("cuDNN",torch.backends.cudnn.version())
+    print("Device",torch.cuda.current_device())
+
+
+
 img_list = []
+print("Scanning /media folder for images to use...")
 for filename in os.listdir(media_path):
     if filename.endswith(".jpg") or filename.endswith(".jpeg") or filename.endswith(".png"):
         img_list.append(os.path.join(media_path, filename))
         print(os.path.join(media_path, filename))
 
-print(img_list, len(img_list))
+#print(img_list, len(img_list))
 
 
 
@@ -66,9 +86,10 @@ def main():
     source_image =  readnextimage(0)
 
     # start streaming
-    camera = pyfakewebcam.FakeWebcam(f'/dev/video{stream_id}', webcam_width, webcam_height)
-    camera.print_capabilities()
-    print(f"Fake webcam created on /dev/video{stream_id}. Use Firefox and join a Google Meeting to test.")
+    if system=="linux":
+        camera = pyfakewebcam.FakeWebcam(f'/dev/video{stream_id}', webcam_width, webcam_height)
+        camera.print_capabilities()
+        print(f"Fake webcam created on /dev/video{stream_id}. Use Firefox and join a Google Meeting to test.")
 
     # capture webcam
     video_capture = cv2.VideoCapture(webcam_id)
@@ -135,7 +156,8 @@ def main():
         stream_v = (stream_v*255).astype(np.uint8)
 
         # stream to fakewebcam
-        camera.schedule_frame(stream_v)
+        if system=="linux":
+            camera.schedule_frame(stream_v)
 
 
         k = cv2.waitKey(1) 
@@ -160,8 +182,9 @@ def main():
 
 # transform face with first-order-model
 def process_image(source_image,base,current,net, generator,kp_detector,relative):
-    predictions = make_animation(source_image, [base,current], generator, kp_detector, relative=relative, adapt_movement_scale=False)
-    
+    predictions = make_animation(source_image, [base,current], generator, kp_detector, relative=relative, adapt_movement_scale=False, cpu=False)
+    #print("Device",torch.cuda.current_device())
+    #print("Device Name:",torch.cuda.get_device_name(gpu_id))
     # predictions = [1]# predictions[..., ::-1]
     # predictions = (np.clip(predictions, 0, 1) * 255).astype(np.uint8)
     return predictions[1]
