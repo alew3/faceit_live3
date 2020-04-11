@@ -1,6 +1,13 @@
 # faceit_live3
 This is an update to http://github.com/faceit_live using [first order model](https://github.com/AliaksandrSiarohin/first-order-model) by Aliaksandr Siarohin to generate the images. This model only requires a single image, so no training is needed and things are much easier.
 
+# Demo
+
+Here is a video of the program running. It uses a single page I took from partner's Facebook page!
+
+[![Faceit Live3 Demo](https://raw.githubusercontent.com/alew3/faceit_live3/master/docs/demo.png)](https://www.youtube.com/watch?v=NDJ72v1uKpw)
+
+
 # Setup
 
 ## Requirements
