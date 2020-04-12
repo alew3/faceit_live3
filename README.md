@@ -28,7 +28,7 @@ Don't forget to use the *--recurse-submodules* parameter to checkout all depende
 
 You can find it at: [google-drive](https://drive.google.com/open?id=1PyQJmkdCsAkOYwUyaj_l-l0as-iLDgeH) or [yandex-disk](https://yadi.sk/d/lEw8uRm140L_eQ).
 
-# Install Nvidia Deep Learning Drivers / Libs
+# Install NVidia Deep Learning Drivers / Libs
 Install the latest Nvidia video driver then the Deep Learning infrastructure:
 
 * NVidia [CUDA 10.1 driver](https://developer.nvidia.com/cuda-downloads) - 2.6GB Download!
@@ -110,6 +110,10 @@ $ v4l2-ctl --list-devices
 $ v4l2-ctl --list-formats -d /dev/video1
 
 ```
+
+## Mac Support
+
+Unfortunately, Apple and NVidia have stopped collaborating and CUDA support is no longer available for the Mac. If we get it running on the Mac (which is possible), it will be very slow as everything will be running on the CPU whihc is not ideal.
 
 ## Images
 
