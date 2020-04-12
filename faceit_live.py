@@ -121,7 +121,7 @@ def main():
     cv2.resizeWindow('Stream', webcam_width,webcam_height)
 
     
-    print("Press C to center Webcam, Press N for next image in media directory, T to alter between relative and absolute transformation, Q to quit")
+    print("Press C to center Webcam, Press B/N for previous/next image in media directory, T to alter between relative and absolute transformation, Q to quit")
     x1,y1,x2,y2 = [0,0,0,0]
     relative = True
     while True:
