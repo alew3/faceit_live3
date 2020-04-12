@@ -113,7 +113,7 @@ $ v4l2-ctl --list-formats -d /dev/video1
 
 ## Mac Support
 
-Unfortunately, Apple and NVidia have stopped collaborating and CUDA support is no longer available for the Mac. If we get it running on the Mac (which is possible), it will be very slow as everything will be running on the CPU whihc is not ideal.
+Unfortunately, Apple and NVidia have stopped collaborating and CUDA support is no longer available for the Mac. If we get it running on the Mac (which is possible), it will be very slow as everything will be running on the CPU.
 
 ## Images
 
