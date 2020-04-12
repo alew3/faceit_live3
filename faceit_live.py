@@ -113,7 +113,7 @@ def main():
 
     cv2.namedWindow('DeepFake', cv2.WINDOW_GUI_NORMAL) # face transformation
     cv2.moveWindow('DeepFake', int(screen_width/2)+150, 100)
-    cv2.resizeWindow('DeepFake', 256,256)
+    cv2.resizeWindow('DeepFake', int(img_shape[1] / img_shape[0] * 256), 256)
 
 
     cv2.namedWindow('Stream', cv2.WINDOW_GUI_NORMAL) # rendered to fake webcam
