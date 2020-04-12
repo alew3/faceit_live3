@@ -111,9 +111,9 @@ $ v4l2-ctl --list-formats -d /dev/video1
 
 ```
 
-## Mac Support
+# Mac Support
 
-Unfortunately, Apple and NVidia have stopped collaborating and CUDA support is no longer available for the Mac. If we get it running on the Mac (which is possible), it will be very slow as everything will be running on the CPU.
+Unfortunately, Apple and NVidia have stopped collaborating and CUDA support is no longer available for the Mac. On the Mac it will be very slow as everything will be running on the CPU with no GPU support.
 
 ## Images
 
@@ -151,7 +151,7 @@ For better results, look into the webcam when starting the program or when press
 # Troubleshooting
 
 ### Slow
-If it is running slow, check that it is running on the GPU by looking at the TASK MANAGER under Windows and NVidia Control Panel for Linux.
+If it is running slow, check that it is running on the GPU using the nvidia-smi command. The Windows Task Manager doesn't report the GPU usage correctly. (Add C:\Program Files\NVIDIA Corporation\NVSMI to your Windows Path to find the command).
 
 ### Error
 If you get the error below under LINUX, it means you haven't started your v4l2loopback.
