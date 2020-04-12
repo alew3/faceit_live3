@@ -37,6 +37,7 @@ gpu_id = args.gpu_id
 webcam_height = 480
 webcam_width = 640
 screen_width, screen_height = pyautogui.size()
+img_shape = [256, 256, 0]
 
 system = args.system
 if system=="linux":
@@ -112,15 +113,15 @@ def main():
 
     cv2.namedWindow('DeepFake', cv2.WINDOW_GUI_NORMAL) # face transformation
     cv2.moveWindow('DeepFake', int(screen_width/2)+150, 100)
-    cv2.resizeWindow('DeepFake', 256,256)
+    cv2.resizeWindow('DeepFake', int(img_shape[1] / img_shape[0] * 256), 256)
 
 
     cv2.namedWindow('Stream', cv2.WINDOW_GUI_NORMAL) # rendered to fake webcam
     cv2.moveWindow('Stream', int(screen_width/2)-int(webcam_width/2), 400)
-    cv2.resizeWindow('Stream', webcam_width,webcam_width)
+    cv2.resizeWindow('Stream', webcam_width,webcam_height)
 
     
-    print("Press C to center Webcam, Press N for next image in media directory, T to alter between relative and absolute transformation, Q to quit")
+    print("Press C to center Webcam, Press B/N for previous/next image in media directory, T to alter between relative and absolute transformation, Q to quit")
     x1,y1,x2,y2 = [0,0,0,0]
     relative = True
     while True:
@@ -146,9 +147,11 @@ def main():
         cv2.imshow('DeepFake', deep_fake)
 
 
-        rgb = cv2.resize(deep_fake,(480,480))
+        rgb = cv2.resize(deep_fake,(int(img_shape[1] / img_shape[0] * 480),480))
         # pad image 
-        stream_v = cv2.copyMakeBorder( rgb, 0, 0, 80, 80, cv2.BORDER_CONSTANT)
+        x_border = int((640-(img_shape[1] / img_shape[0] * 480))/2)
+        y_border = int((480-(img_shape[0] / img_shape[1] * 640))/2)
+        stream_v = cv2.copyMakeBorder(rgb, y_border if y_border >=0 else 0, y_border if y_border >=0 else 0, x_border if x_border >=0 else 0, x_border if x_border >=0 else 0, cv2.BORDER_CONSTANT)
         cv2.imshow('Stream',stream_v)
         
         #time.sleep(1/30.0)
@@ -168,12 +171,17 @@ def main():
             video_capture.release()
             break
         elif k==ord('c'):
-            print("Centering the image")
             # center
+            print("Centering the image")
+            reset = True
+        elif k==ord('b'):
+            # previous image
+            print("Loading previous image")
+            source_image = readpreviousimage()
             reset = True
         elif k==ord('n'):
-            # rotate images
-            print("Loading new image")
+            # next image
+            print("Loading next image")
             source_image = readnextimage()
             reset = True
         elif k==ord('t'):
@@ -247,8 +255,24 @@ def find_face_cut(net,face,previous=False):
 
     return cut_x1,cut_y1,cut_x2,cut_y2
 
+def readimage():
+    global img_list,img_shape
+    img = imageio.imread(img_list[pos])
+    img_shape = img.shape
+    cv2.resizeWindow('DeepFake', int(img_shape[1] / img_shape[0] * 256), 256)
+    img = resize(img, (256, 256))[..., :3]
+    return img
+
+def readpreviousimage():
+    global pos
+    if pos<len(img_list)-1:
+        pos=pos-1
+    else:
+        pos=0
+    return readimage()
+
 def readnextimage(position=-1):
-    global img_list,pos
+    global pos
     if (position != -1):
         pos = position
     else:
@@ -256,8 +280,6 @@ def readnextimage(position=-1):
             pos=pos+1
         else:
             pos=0
-    img = imageio.imread(img_list[pos])
-    img = resize(img, (256, 256))[..., :3]
-    return img
+    return readimage()
 
 main()

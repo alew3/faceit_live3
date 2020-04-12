@@ -139,6 +139,7 @@ $ python faceit_live.py --webcam_id 0 --stream_id 1 --gpu_id 0 --system linux
 
 ## Key Shortcuts when running
 ```
+B - cycle previous image in media folder
 N - cycle next image in media folder
 C - recenter webcam and create a new base image
 T - option to alter between 'Relative' and 'Absolute' transformations mode
