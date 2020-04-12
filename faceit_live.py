@@ -227,9 +227,11 @@ def find_face_cut(net,face,previous=False):
     net.setInput(blob)
     detections = net.forward()
     bboxes = []
+    face_found = False
     for i in range(detections.shape[2]):
         confidence = detections[0, 0, i, 2]
         if confidence > 0.8:
+            face_found = True
             x1 = int(detections[0, 0, i, 3] * frameWidth)
             y1 = int(detections[0, 0, i, 4] * frameHeight)
             x2 = int(detections[0, 0, i, 5] * frameWidth)
@@ -245,9 +247,10 @@ def find_face_cut(net,face,previous=False):
             cut_x2 = x2 + int(face_margin_w/2)
             cut_y2 = y2 + int(face_margin_h/3)
 
-    if range(detections.shape[2]) == 0:
-        print("face not found in video")
-        exit()
+    if not face_found:
+        print("No face detected in video")
+        # let's just use the middle section of the image
+        cut_x1,cut_y1,cut_x2,cut_y2 = 112,192,368,448
     else:
         print(f'Found face at: ({x1,y1}) ({x2},{y2} width:{abs(x2-x1)} height: {abs(y2-y1)})')
         print(f'Cutting at: ({cut_x1,cut_y1}) ({cut_x2},{cut_y2} width:{abs(cut_x2-cut_x1)} height: {abs(cut_y2-cut_y1)})')
