@@ -174,9 +174,14 @@ def main():
             print("Centering the image")
             # center
             reset = True
+        elif k==ord('b'):
+            # rotate images
+            print("Loading previous image")
+            source_image = readpreviousimage()
+            reset = True
         elif k==ord('n'):
             # rotate images
-            print("Loading new image")
+            print("Loading next image")
             source_image = readnextimage()
             reset = True
         elif k==ord('t'):
@@ -250,8 +255,24 @@ def find_face_cut(net,face,previous=False):
 
     return cut_x1,cut_y1,cut_x2,cut_y2
 
+def readimage():
+    global img_list,img_shape
+    img = imageio.imread(img_list[pos])
+    img_shape = img.shape
+    cv2.resizeWindow('DeepFake', int(img_shape[1] / img_shape[0] * 256), 256)
+    img = resize(img, (256, 256))[..., :3]
+    return img
+
+def readpreviousimage():
+    global pos
+    if pos<len(img_list)-1:
+        pos=pos-1
+    else:
+        pos=0
+    return readimage()
+
 def readnextimage(position=-1):
-    global img_list,pos,img_shape
+    global pos
     if (position != -1):
         pos = position
     else:
@@ -259,10 +280,6 @@ def readnextimage(position=-1):
             pos=pos+1
         else:
             pos=0
-    img = imageio.imread(img_list[pos])
-    img_shape = img.shape
-    cv2.resizeWindow('DeepFake', int(img_shape[1] / img_shape[0] * 256), 256)
-    img = resize(img, (256, 256))[..., :3]
-    return img
+    return readimage()
 
 main()
