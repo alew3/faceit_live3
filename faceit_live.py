@@ -33,19 +33,19 @@ parser.add_argument('--system', type = str, default = "win")
 args = parser.parse_args()
 webcam_id = args.webcam_id
 gpu_id = args.gpu_id
+stream_id = args.stream_id
+system = args.system
 
 webcam_height = 480
 webcam_width = 640
 screen_width, screen_height = pyautogui.size()
 img_shape = [256, 256, 0]
 
-system = args.system
 if system=="linux":
     print("Linux version, importing FakeWebCam")
     import pyfakewebcam
 
 
-stream_id = args.stream_id
 first_order_path = 'first-order-model/'
 sys.path.insert(0,first_order_path)
 reset = True
@@ -67,7 +67,6 @@ if (torch.cuda.is_available()):
     print("Device",torch.cuda.current_device())
 
 
-
 img_list = []
 print("Scanning /media folder for images to use...")
 for filename in os.listdir(media_path):
@@ -76,10 +75,6 @@ for filename in os.listdir(media_path):
         print(os.path.join(media_path, filename))
 
 #print(img_list, len(img_list))
-
-
-
-
 
 ############## end setup ####
 
@@ -108,16 +103,17 @@ def main():
     
     # create windows
     cv2.namedWindow('Face', cv2.WINDOW_GUI_NORMAL) # extracted face
-    cv2.moveWindow('Face', int(screen_width/2)-150, 100)
+    cv2.moveWindow('Face', int(screen_width//2)-150, 100)
     cv2.resizeWindow('Face', 256,256)
 
     cv2.namedWindow('DeepFake', cv2.WINDOW_GUI_NORMAL) # face transformation
-    cv2.moveWindow('DeepFake', int(screen_width/2)+150, 100)
-    cv2.resizeWindow('DeepFake', int(img_shape[1] / img_shape[0] * 256), 256)
+    cv2.moveWindow('DeepFake', int(screen_width//2)+150, 100)
+    img_shape = source_image.shape
+    cv2.resizeWindow('DeepFake', int(img_shape[1] // img_shape[0] * 256), 256)
 
 
     cv2.namedWindow('Stream', cv2.WINDOW_GUI_NORMAL) # rendered to fake webcam
-    cv2.moveWindow('Stream', int(screen_width/2)-int(webcam_width/2), 400)
+    cv2.moveWindow('Stream', int(screen_width//2)-int(webcam_width//2), 400)
     cv2.resizeWindow('Stream', webcam_width,webcam_height)
 
     
@@ -133,25 +129,42 @@ def main():
             x1,y1,x2,y2 = find_face_cut(net,frame)
             previous = cut_face_window(x1,y1,x2,y2,frame)
             reset = False
+            #img_shape = source_image.shape
+            #cv2.resizeWindow('DeepFake', int(img_shape[1] // img_shape[0] * 256), 256)
             #cv2.imshow('Previous',previous)
 
 
         curr_face = cut_face_window(x1,y1,x2,y2,frame)
-        #cv2.imshow('Curr Face',curr_face)
-        #cv2.imshow('Source Image',source_image)
+        cv2.imshow('Previous',previous)
+        cv2.imshow('Curr Face',curr_face)
+        cv2.imshow('Source Image',source_image)
+
+        print('previous=',previous.shape)
+        print('curr_face=',curr_face.shape)
+        print('source=',source_image.shape)
+
         deep_fake = process_image(source_image,previous,curr_face,net, generator, kp_detector, relative)
+        print("deep_fake",deep_fake.shape)
+
         deep_fake = cv2.cvtColor(deep_fake, cv2.COLOR_RGB2BGR) 
 
-        #cv2.imshow('Webcam', frame) - get face
+        rgb = cv2.resize(deep_fake,(int(source_image.shape[0] // source_image.shape[1] * 480),480))
+
+        # pad image 
+        x_border = int((640-(img_shape[1] // img_shape[0] * 480))//2)
+        #y_border = int((480-(img_shape[0] // img_shape[1] * 640))//2)
+
+
+
+
+        stream_v = cv2.copyMakeBorder(rgb, 0, 0, x_border if x_border >=0 else 0, x_border if x_border >=0 else 0, cv2.BORDER_CONSTANT)
+        
+        cv2.imshow('Webcam', frame)
         cv2.imshow('Face', curr_face)
         cv2.imshow('DeepFake', deep_fake)
-
-
-        rgb = cv2.resize(deep_fake,(int(img_shape[1] / img_shape[0] * 480),480))
-        # pad image 
-        x_border = int((640-(img_shape[1] / img_shape[0] * 480))/2)
-        y_border = int((480-(img_shape[0] / img_shape[1] * 640))/2)
-        stream_v = cv2.copyMakeBorder(rgb, y_border if y_border >=0 else 0, y_border if y_border >=0 else 0, x_border if x_border >=0 else 0, x_border if x_border >=0 else 0, cv2.BORDER_CONSTANT)
+        #cv2.imshow('Previous', previous)
+        #cv2.imshow('RGB', rgb)
+        #cv2.imshow('Source Image', source_image)
         cv2.imshow('Stream',stream_v)
         
         #time.sleep(1/30.0)
@@ -196,12 +209,8 @@ def main():
 
 # transform face with first-order-model
 def process_image(source_image,base,current,net, generator,kp_detector,relative):
-    predictions = make_animation(source_image, [base,current], generator, kp_detector, relative=relative, adapt_movement_scale=False, cpu=False)
-    #print("Device",torch.cuda.current_device())
-    #print("Device Name:",torch.cuda.get_device_name(gpu_id))
-    # predictions = [1]# predictions[..., ::-1]
-    # predictions = (np.clip(predictions, 0, 1) * 255).astype(np.uint8)
-    return predictions[1]
+    predictions = make_animation(source_image, [base,current], generator, kp_detector, relative=relative, adapt_movement_scale=False)
+    return predictions[1] 
 
 def load_face_model():
     modelFile = f"{model_path}/res10_300x300_ssd_iter_140000.caffemodel"
@@ -210,13 +219,8 @@ def load_face_model():
     return net
 
 def cut_face_window(x1,y1,x2,y2,frame):
-    cut_x1 = x1
-    cut_y1 = y1
-    cut_x2 = x2
-    cut_y2 = y2
-    frame = frame[cut_y1:cut_y2,cut_x1:cut_x2]
-    face = resize(frame, (256, 256))[..., :3]
-    
+    frame = frame[y1:y2,x1:x2]
+    face = resize(frame, (256, 256))# [..., :3]
     return face
 
 # find the face in webcam stream and center a 256x256 window
@@ -237,15 +241,15 @@ def find_face_cut(net,face,previous=False):
             x2 = int(detections[0, 0, i, 5] * frameWidth)
             y2 = int(detections[0, 0, i, 6] * frameHeight)
 
-            face_margin_w = int(256 - (abs(x1-x2) -.5))
-            face_margin_h = int(256 - (abs(y1-y2) -.5))
+            face_margin_w = int(256 - (abs(x1-x2)))
+            face_margin_h = int(256 - (abs(y1-y2)))
 
-            cut_x1 = (x1 - int(face_margin_w/2))
+            cut_x1 = (x1 - int(face_margin_w//2))
             if cut_x1<0: cut_x1=0
-            cut_y1 = y1 - int(2*face_margin_h/3)
+            cut_y1 = y1 - int(2*face_margin_h//3)
             if cut_y1<0: cut_y1=0
-            cut_x2 = x2 + int(face_margin_w/2)
-            cut_y2 = y2 + int(face_margin_h/3)
+            cut_x2 = x2 + int(face_margin_w//2)
+            cut_y2 = y2 + int(face_margin_h//3)
 
     if not face_found:
         print("No face detected in video")
@@ -261,8 +265,6 @@ def find_face_cut(net,face,previous=False):
 def readimage():
     global img_list,img_shape
     img = imageio.imread(img_list[pos])
-    img_shape = img.shape
-    cv2.resizeWindow('DeepFake', int(img_shape[1] / img_shape[0] * 256), 256)
     img = resize(img, (256, 256))[..., :3]
     return img
 
