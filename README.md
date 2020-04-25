@@ -3,7 +3,7 @@ This is an update to http://github.com/faceit_live using [first order model](htt
 
 # Demo
 
-Here is a video of the program running. It uses a single page I took from partner's Facebook page!
+Here is a video of the program running. It uses a single image I took from my friend's Facebook page!
 
 [![Faceit Live3 Demo](https://raw.githubusercontent.com/alew3/faceit_live3/master/docs/demo.png)](https://www.youtube.com/watch?v=NDJ72v1uKpw)
 
