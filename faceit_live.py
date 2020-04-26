@@ -128,8 +128,7 @@ def main():
             x1,y1,x2,y2 = find_face_cut(net,frame)
             previous = cut_face_window(x1,y1,x2,y2,frame)
             reset = False
-            #img_shape = source_image.shape
-            #cv2.resizeWindow('DeepFake', int(img_shape[1] // img_shape[0] * 256), 256)
+            # cv2.resizeWindow('DeepFake', int(img_shape[1] / img_shape[0] * 256), 256)
             #cv2.imshow('Previous',previous)
 
 
@@ -142,14 +141,13 @@ def main():
         #print("deep_fake",deep_fake.shape)
 
         deep_fake = cv2.cvtColor(deep_fake, cv2.COLOR_RGB2BGR) 
-
-        rgb = cv2.resize(deep_fake,(int(source_image.shape[0] // source_image.shape[1] * 480),480))
+        rgb = cv2.resize(deep_fake,(int(img_shape[1] / img_shape[0] * 480),480))
 
         # pad image 
-        x_border = int((640-(img_shape[1] // img_shape[0] * 480))//2)
-        #y_border = int((480-(img_shape[0] // img_shape[1] * 640))//2)
+        x_border = int((640-(img_shape[1] / img_shape[0] * 480))//2)
+        # y_border = int((480-(img_shape[0] / img_shape[1] * 640))//2)
 
-        stream_v = cv2.copyMakeBorder(rgb, 0, 0, x_border if x_border >=0 else 0, x_border if x_border >=0 else 0, cv2.BORDER_CONSTANT)
+        stream_v = cv2.copyMakeBorder(rgb,0, 0, x_border if x_border >=0 else 0, x_border if x_border >=0 else 0, cv2.BORDER_CONSTANT)
         
         #cv2.imshow('Webcam', frame)
         cv2.imshow('Face', curr_face)
@@ -193,7 +191,6 @@ def main():
             # rotate 
             relative = not relative
             print("Changing transform mode")
-
 
     cv2.destroyAllWindows()
     exit()
@@ -258,8 +255,9 @@ def find_face_cut(net,face):
     return cut_x1,cut_y1,cut_x2,cut_y2
 
 def readimage():
-    global img_list,img_shape
+    global img_shape
     img = imageio.imread(img_list[pos])
+    img_shape = img.shape
     img = resize(img, (256, 256))[..., :3]
     return img
 
