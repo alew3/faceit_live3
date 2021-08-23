@@ -27,7 +27,7 @@ json5==0.9.4
 jsonschema==3.2.0
 jupyter-client==6.1.2
 jupyter-core==4.6.3
-jupyterlab==2.0.1
+jupyterlab==2.2.10
 jupyterlab-server==1.1.0
 kiwisolver==1.2.0
 lazy-object-proxy==1.4.3
